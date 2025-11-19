@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRACTAL GPU Runtime - Browser Demo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f2e 100%);
+            color: #e0e6ed;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #00d9ff;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            text-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+        }
+
+        .panel {
+            background: rgba(20, 25, 35, 0.9);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .panel h2 {
+            color: #00d9ff;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 217, 255, 0.2);
+            padding-bottom: 10px;
+        }
+
+        .status {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat {
+            background: rgba(0, 217, 255, 0.1);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #8899aa;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            color: #00d9ff;
+            font-weight: bold;
+        }
+
+        .stat-value.success { color: #00ff88; }
+        .stat-value.warning { color: #ffaa00; }
+        .stat-value.error { color: #ff4466; }
+
+        button {
+            background: linear-gradient(135deg, #00d9ff 0%, #0099ff 100%);
+            color: #0a0e1a;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 217, 255, 0.5);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: #333;
+            color: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .log {
+            background: #0a0e1a;
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            height: 300px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .log-line {
+            margin-bottom: 5px;
+            padding: 3px 0;
+        }
+
+        .log-line.info { color: #00d9ff; }
+        .log-line.success { color: #00ff88; }
+        .log-line.warn { color: #ffaa00; }
+        .log-line.error { color: #ff4466; }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 217, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #00d9ff;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .model-config {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .config-item {
+            background: rgba(0, 217, 255, 0.05);
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 217, 255, 0.1);
+        }
+
+        .config-label {
+            font-size: 0.75rem;
+            color: #8899aa;
+            margin-bottom: 3px;
+        }
+
+        .config-value {
+            font-size: 1rem;
+            color: #00d9ff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ FRACTAL GPU RUNTIME ⚡</h1>
+
+        <div class="panel">
+            <h2>System Status</h2>
+            <div class="status">
+                <div class="stat">
+                    <div class="stat-label">Runtime Status</div>
+                    <div class="stat-value" id="status">Initializing...</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">WebGPU</div>
+                    <div class="stat-value" id="gpu-status">Checking...</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Total Inferences</div>
+                    <div class="stat-value" id="total-inferences">0</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Avg Latency</div>
+                    <div class="stat-value" id="avg-latency">--</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">CPU Ops</div>
+                    <div class="stat-value" id="cpu-ops">0</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">GPU Ops</div>
+                    <div class="stat-value success" id="gpu-ops">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Model Configuration</h2>
+            <div class="model-config">
+                <div class="config-item">
+                    <div class="config-label">Layers</div>
+                    <div class="config-value" id="model-layers">--</div>
+                </div>
+                <div class="config-item">
+                    <div class="config-label">Hidden Size</div>
+                    <div class="config-value" id="model-hidden">--</div>
+                </div>
+                <div class="config-item">
+                    <div class="config-label">Attention Heads</div>
+                    <div class="config-value" id="model-heads">--</div>
+                </div>
+                <div class="config-item">
+                    <div class="config-label">Vocab Size</div>
+                    <div class="config-value" id="model-vocab">--</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Controls</h2>
+            <div class="controls">
+                <button id="btn-init" onclick="initRuntime()">Initialize Runtime</button>
+                <button id="btn-create-model" onclick="createModel()" disabled>Create Test Model</button>
+                <button id="btn-run-inference" onclick="runInference()" disabled>Run Inference</button>
+                <button id="btn-benchmark" onclick="runBenchmark()" disabled>Run Benchmark (10x)</button>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Activity Log</h2>
+            <div class="log" id="log"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { FractalRuntime } from '../src/index.js';
+
+        let runtime = null;
+        let model = null;
+
+        function log(message, type = 'info') {
+            const logEl = document.getElementById('log');
+            const line = document.createElement('div');
+            line.className = `log-line ${type}`;
+            line.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logEl.appendChild(line);
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        function updateStats() {
+            if (!runtime) return;
+
+            const stats = runtime.getStats();
+
+            document.getElementById('status').textContent = stats.ready ? 'Ready' : 'Not Ready';
+            document.getElementById('status').className = stats.ready ? 'stat-value success' : 'stat-value warning';
+
+            document.getElementById('gpu-status').textContent = stats.hasGPU ? 'Available' : 'CPU Only';
+            document.getElementById('gpu-status').className = stats.hasGPU ? 'stat-value success' : 'stat-value warning';
+
+            document.getElementById('total-inferences').textContent = stats.totalInferences;
+            document.getElementById('avg-latency').textContent = stats.avgLatency > 0
+                ? `${stats.avgLatency.toFixed(2)}ms`
+                : '--';
+
+            document.getElementById('cpu-ops').textContent = stats.opsRouted.cpu;
+            document.getElementById('gpu-ops').textContent = stats.opsRouted.gpu;
+        }
+
+        window.initRuntime = async function() {
+            try {
+                log('Initializing FRACTAL GPU Runtime...', 'info');
+                document.getElementById('btn-init').disabled = true;
+
+                runtime = new FractalRuntime({
+                    logLevel: 'info',
+                    gpuThreshold: 64
+                });
+
+                await runtime.init();
+
+                log('Runtime initialized successfully!', 'success');
+                updateStats();
+
+                document.getElementById('btn-create-model').disabled = false;
+
+            } catch (err) {
+                log(`Error: ${err.message}`, 'error');
+                console.error(err);
+            }
+        };
+
+        window.createModel = function() {
+            try {
+                log('Creating test model...', 'info');
+
+                model = runtime.createTestModel('test');
+
+                document.getElementById('model-layers').textContent = model.config.n_layer;
+                document.getElementById('model-hidden').textContent = model.config.n_embd;
+                document.getElementById('model-heads').textContent = model.config.n_head;
+                document.getElementById('model-vocab').textContent = model.config.vocab_size;
+
+                log(`Model created: ${model.config.n_layer} layers, ${model.config.n_embd}d hidden`, 'success');
+
+                document.getElementById('btn-run-inference').disabled = false;
+                document.getElementById('btn-benchmark').disabled = false;
+
+            } catch (err) {
+                log(`Error: ${err.message}`, 'error');
+                console.error(err);
+            }
+        };
+
+        window.runInference = async function() {
+            if (!runtime || !model) return;
+
+            try {
+                const inputTokens = [42, 123, 456, 789];
+
+                log(`Running inference on ${inputTokens.length} tokens...`, 'info');
+
+                const result = await runtime.infer('test', inputTokens);
+
+                log(`Inference complete in ${result.latency.toFixed(2)}ms`, 'success');
+                log(`Output shape: [${result.logits.shape.join(', ')}]`, 'info');
+                log(`First 5 logits: [${result.logits.data.slice(0, 5).map(v => v.toFixed(4)).join(', ')}...]`, 'info');
+
+                updateStats();
+
+            } catch (err) {
+                log(`Error: ${err.message}`, 'error');
+                console.error(err);
+            }
+        };
+
+        window.runBenchmark = async function() {
+            if (!runtime || !model) return;
+
+            try {
+                document.getElementById('btn-benchmark').disabled = true;
+                log('Starting benchmark (10 iterations)...', 'info');
+
+                const inputTokens = [42, 123, 456, 789];
+                const times = [];
+
+                for (let i = 0; i < 10; i++) {
+                    const result = await runtime.infer('test', inputTokens);
+                    times.push(result.latency);
+                    log(`Iteration ${i + 1}/10: ${result.latency.toFixed(2)}ms`, 'info');
+                }
+
+                const avg = times.reduce((a, b) => a + b, 0) / times.length;
+                const min = Math.min(...times);
+                const max = Math.max(...times);
+
+                log('Benchmark complete!', 'success');
+                log(`Min: ${min.toFixed(2)}ms | Avg: ${avg.toFixed(2)}ms | Max: ${max.toFixed(2)}ms`, 'success');
+
+                updateStats();
+                document.getElementById('btn-benchmark').disabled = false;
+
+            } catch (err) {
+                log(`Error: ${err.message}`, 'error');
+                console.error(err);
+                document.getElementById('btn-benchmark').disabled = false;
+            }
+        };
+
+        // Auto-init on load
+        log('Page loaded. Click "Initialize Runtime" to begin.', 'info');
+    </script>
+</body>
+</html>

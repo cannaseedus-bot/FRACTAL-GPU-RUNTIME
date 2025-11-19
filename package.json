@@ -1,0 +1,34 @@
+{
+  "name": "@fractal/gpu-runtime",
+  "version": "0.1.0",
+  "description": "Production WebGPU runtime for transformer inference on low-end hardware",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "test": "node test/test-runner.js",
+    "dev": "node examples/simple-inference.js",
+    "serve": "python3 -m http.server 8080"
+  },
+  "keywords": [
+    "webgpu",
+    "transformer",
+    "inference",
+    "gpu",
+    "llm",
+    "fractals",
+    "xjson"
+  ],
+  "author": "FRACTAL-K'UHUL",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "exports": {
+    ".": "./src/index.js",
+    "./kernels": "./src/kernels/index.js",
+    "./ops": "./src/ops/index.js",
+    "./runtime": "./src/runtime.js"
+  }
+}

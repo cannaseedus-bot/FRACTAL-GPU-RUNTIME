@@ -1,0 +1,110 @@
+{
+  "fractal_runtime": "1.0",
+  "model_type": "transformer",
+  "config": {
+    "vocab_size": 1000,
+    "n_embd": 128,
+    "n_head": 4,
+    "n_layer": 2,
+    "max_seq_len": 256,
+    "dropout": 0.1,
+    "activation": "gelu"
+  },
+  "architecture": "transformer",
+  "layers": [
+    {
+      "type": "embedding",
+      "name": "token_embedding",
+      "params": {
+        "vocab_size": 1000,
+        "embedding_dim": 128
+      }
+    },
+    {
+      "type": "embedding",
+      "name": "position_embedding",
+      "params": {
+        "max_positions": 256,
+        "embedding_dim": 128
+      }
+    },
+    {
+      "type": "transformer_block",
+      "name": "layer_0",
+      "params": {
+        "n_embd": 128,
+        "n_head": 4,
+        "activation": "gelu"
+      },
+      "sublayers": [
+        {
+          "type": "multi_head_attention",
+          "n_head": 4,
+          "head_dim": 32
+        },
+        {
+          "type": "feed_forward",
+          "hidden_dim": 512,
+          "activation": "gelu"
+        }
+      ]
+    },
+    {
+      "type": "transformer_block",
+      "name": "layer_1",
+      "params": {
+        "n_embd": 128,
+        "n_head": 4,
+        "activation": "gelu"
+      },
+      "sublayers": [
+        {
+          "type": "multi_head_attention",
+          "n_head": 4,
+          "head_dim": 32
+        },
+        {
+          "type": "feed_forward",
+          "hidden_dim": 512,
+          "activation": "gelu"
+        }
+      ]
+    },
+    {
+      "type": "layer_norm",
+      "name": "final_norm",
+      "params": {
+        "n_embd": 128,
+        "epsilon": 1e-5
+      }
+    },
+    {
+      "type": "linear",
+      "name": "lm_head",
+      "params": {
+        "in_features": 128,
+        "out_features": 1000,
+        "bias": false
+      }
+    }
+  ],
+  "metadata": {
+    "name": "mini-transformer",
+    "version": "0.1.0",
+    "framework": "fractal-gpu-runtime",
+    "created": "2025-01-15T00:00:00Z",
+    "description": "Minimal transformer model for testing",
+    "compatible_with": [
+      "@xjson/xjson-server",
+      "@xjson/klh-orchestrator",
+      "asx-language-framework"
+    ]
+  },
+  "weights": {},
+  "training_config": {
+    "optimizer": "adamw",
+    "learning_rate": 0.0001,
+    "batch_size": 32,
+    "max_steps": 10000
+  }
+}
