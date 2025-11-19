@@ -7,7 +7,11 @@
   "scripts": {
     "test": "node test/test-runner.js",
     "dev": "node examples/simple-inference.js",
-    "serve": "python3 -m http.server 8080"
+    "serve": "python3 -m http.server 8080",
+    "sync": "node scripts/sync-colab.js",
+    "sync:watch": "node scripts/sync-colab.js --watch ./models",
+    "sync:test-all": "node scripts/sync-colab.js --test-all ./models",
+    "dashboard": "python3 -m http.server 8080 --directory dashboard"
   },
   "keywords": [
     "webgpu",
