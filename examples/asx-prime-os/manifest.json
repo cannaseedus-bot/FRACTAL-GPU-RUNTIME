@@ -1,0 +1,57 @@
+{
+  "name": "ASX Prime OS",
+  "short_name": "ASX Prime",
+  "description": "Full-stack runtime with XJSON server, K'uhul VM, and tunneling",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#16f2aa",
+  "orientation": "any",
+  "scope": "./",
+  "categories": ["productivity", "development", "utilities"],
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Open Terminal",
+      "short_name": "Terminal",
+      "description": "Open system terminal",
+      "url": "./#terminal",
+      "icons": [{ "src": "./terminal-icon.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "XJSON Server",
+      "short_name": "XJSON",
+      "description": "Manage XJSON server",
+      "url": "./#xjson",
+      "icons": [{ "src": "./server-icon.png", "sizes": "192x192" }]
+    }
+  ],
+  "asx_runtime": {
+    "version": "4.2.0",
+    "engine": {
+      "kuhul": { "version": "2.1.3", "glyphs": true, "bytecode": true },
+      "scx": { "compression": "lz-string", "cipher": "aes-256-gcm" },
+      "xjson": { "protocol": "http/ws", "ports": [7777, 7778] }
+    },
+    "capabilities": [
+      "filesystem",
+      "network",
+      "dns",
+      "tunnel",
+      "vm",
+      "compression"
+    ]
+  }
+}
