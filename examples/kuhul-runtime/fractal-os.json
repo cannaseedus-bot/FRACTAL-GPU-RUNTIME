@@ -1,0 +1,63 @@
+{
+  "fractal_os": "1.0",
+  "device_profile": "LOW_END_LAPTOP",
+  "hardware_shards": [
+    {
+      "id": "cpu-main",
+      "type": "cpu",
+      "cores": 8,
+      "simd": ["sse4", "avx2"],
+      "max_threads": 8,
+      "priority": "high"
+    },
+    {
+      "id": "igpu-0",
+      "type": "gpu-integrated",
+      "backend": "webgpu",
+      "vram_mb": 256,
+      "workgroup_limits": { "x": 128, "y": 1, "z": 1 },
+      "priority": "medium"
+    }
+  ],
+  "compute_profiles": {
+    "ULTRA_LOW": {
+      "target_hw": ["cpu-main", "igpu-0"],
+      "max_model_mb": 1500,
+      "quantization": "4bit",
+      "context_tokens": 1024,
+      "micro_batch": 1,
+      "matmul_mode": "tiling-small",
+      "attn_mode": "cpu-router + gpu-matmul"
+    }
+  },
+  "runtime_strategies": {
+    "matmul": {
+      "gpu_threshold": 64,
+      "cpu_fallback": true
+    },
+    "attention": {
+      "route_to": "gpu-if-fits",
+      "max_tile": 256
+    },
+    "router": {
+      "host": "cpu-main"
+    }
+  },
+  "bios_agents": [
+    {
+      "id": "cpu-router",
+      "role": "token-routing",
+      "shard": "cpu-main"
+    },
+    {
+      "id": "gpu-matmul",
+      "role": "batched-matmul",
+      "shard": "igpu-0"
+    },
+    {
+      "id": "cpu-fallback",
+      "role": "matmul-fallback",
+      "shard": "cpu-main"
+    }
+  ]
+}

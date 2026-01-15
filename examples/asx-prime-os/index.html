@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASX Prime OS v4.2</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+    <style>
+        :root {
+            --bg-primary: #020617;
+            --bg-secondary: #0f172a;
+            --bg-tertiary: #1e293b;
+            --accent-primary: #16f2aa;
+            --accent-secondary: #00f5ff;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --border: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            grid-template-rows: 60px 1fr;
+            height: 100vh;
+            gap: 1px;
+            background: var(--border);
+        }
+
+        /* Header */
+        .header {
+            grid-column: 1 / -1;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-primary);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--bg-secondary);
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            padding: 12px 16px;
+            margin: 4px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .nav-item.active {
+            background: var(--accent-primary);
+            color: var(--bg-primary);
+        }
+
+        /* Main Content */
+        .main {
+            background: var(--bg-primary);
+            padding: 20px;
+            overflow-y: auto;
+            display: grid;
+            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-primary);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-primary);
+        }
+
+        /* Terminal */
+        #terminalOutput {
+            background: #000;
+            color: var(--accent-primary);
+            font-family: 'Cascadia Code', 'Fira Code', monospace;
+            padding: 15px;
+            border-radius: 8px;
+            height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            font-size: 14px;
+        }
+
+        .terminal-line {
+            margin: 2px 0;
+        }
+
+        .prompt {
+            color: var(--success);
+        }
+
+        .command {
+            color: var(--text-primary);
+        }
+
+        .output {
+            color: var(--text-secondary);
+        }
+
+        .error {
+            color: var(--danger);
+        }
+
+        /* Input */
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px 15px;
+            color: var(--text-primary);
+            font-family: 'Cascadia Code', monospace;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        button {
+            background: var(--accent-primary);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .stat-item {
+            background: var(--bg-tertiary);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-primary);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        /* Tunnel List */
+        .tunnel-item {
+            background: var(--bg-tertiary);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-primary);
+        }
+
+        .tunnel-url {
+            font-family: monospace;
+            color: var(--accent-secondary);
+            word-break: break-all;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="status-dot"></div>
+                ASX Prime OS v4.2
+            </div>
+            <div style="margin-left: auto; display: flex; gap: 10px;">
+                <button onclick="toggleTheme()">🌓</button>
+                <button onclick="installApp()">📱 Install</button>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="nav-item active" onclick="showSection('dashboard')">
+                📊 Dashboard
+            </div>
+            <div class="nav-item" onclick="showSection('terminal')">
+                💻 Terminal
+            </div>
+            <div class="nav-item" onclick="showSection('xjson')">
+                🗄️ XJSON Server
+            </div>
+            <div class="nav-item" onclick="showSection('tunnels')">
+                🌐 Tunnels
+            </div>
+            <div class="nav-item" onclick="showSection('dns')">
+                🔗 DNS
+            </div>
+            <div class="nav-item" onclick="showSection('files')">
+                📁 Filesystem
+            </div>
+            <div class="nav-item" onclick="showSection('kuhul')">
+                𓀠 K'uhul VM
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main" id="mainContent">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="section">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">System Status</h3>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="uptime">0s</div>
+                            <div class="stat-label">Uptime</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="tunnelCount">0</div>
+                            <div class="stat-label">Active Tunnels</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="cacheSize">0</div>
+                            <div class="stat-label">Cache Size</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="connections">0</div>
+                            <div class="stat-label">Connections</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Quick Actions</h3>
+                    </div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                        <button onclick="startServer()">Start Server</button>
+                        <button onclick="createTunnel()">Create Tunnel</button>
+                        <button onclick="clearCache()">Clear Cache</button>
+                        <button onclick="testConnection()">Test Connection</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Recent Activity</h3>
+                    </div>
+                    <div id="activityLog" style="max-height: 200px; overflow-y: auto;">
+                        <!-- Activity items will be added here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Terminal Section -->
+            <section id="terminal" class="section" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">System Terminal</h3>
+                    </div>
+                    <div id="terminalOutput"></div>
+                    <div class="input-group">
+                        <input type="text" id="commandInput" placeholder="Enter command...">
+                        <button onclick="executeCommand()">Execute</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Global state
+        const state = {
+            serverActive: false,
+            activeTunnels: [],
+            theme: 'dark',
+            terminalHistory: [],
+            historyIndex: -1
+        };
+
+        // DOM Elements
+        const sections = document.querySelectorAll('.section');
+        const navItems = document.querySelectorAll('.nav-item');
+        const terminalOutput = document.getElementById('terminalOutput');
+        const commandInput = document.getElementById('commandInput');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            log('🚀 ASX Prime OS v4.2 Initializing...');
+            
+            // Register Service Worker
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registration = await navigator.serviceWorker.register('./sw.js');
+                    log('Service Worker registered');
+                    
+                    // Check for updates
+                    registration.addEventListener('updatefound', () => {
+                        log('New Service Worker version found');
+                    });
+                } catch (error) {
+                    log(`Service Worker registration failed: ${error}`, 'error');
+                }
+            }
+
+            // Check PWA installation
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                log('Running as installed PWA');
+            }
+
+            // Start periodic updates
+            setInterval(updateStats, 5000);
+            updateStats();
+
+            // Focus command input
+            commandInput.focus();
+        });
+
+        // Navigation
+        function showSection(sectionId) {
+            sections.forEach(section => {
+                section.style.display = section.id === sectionId ? 'grid' : 'none';
+            });
+            
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.textContent.includes(
+                    sectionId.charAt(0).toUpperCase() + sectionId.slice(1)
+                )) {
+                    item.classList.add('active');
+                }
+            });
+        }
+
+        // Terminal Functions
+        function log(message, type = 'info') {
+            const line = document.createElement('div');
+            line.className = `terminal-line ${type}`;
+            line.innerHTML = `<span class="prompt">$</span> <span class="${type}">${message}</span>`;
+            terminalOutput.appendChild(line);
+            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+            
+            // Also log to activity
+            logActivity(message);
+        }
+
+        function logActivity(message) {
+            const activityLog = document.getElementById('activityLog');
+            const item = document.createElement('div');
+            item.style.padding = '5px 0';
+            item.style.borderBottom = '1px solid var(--border)';
+            item.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            activityLog.insertBefore(item, activityLog.firstChild);
+            
+            // Limit to 10 items
+            if (activityLog.children.length > 10) {
+                activityLog.removeChild(activityLog.lastChild);
+            }
+        }
+
+        async function executeCommand() {
+            const command = commandInput.value.trim();
+            if (!command) return;
+            
+            // Add to history
+            state.terminalHistory.push(command);
+            state.historyIndex = state.terminalHistory.length;
+            
+            // Display command
+            log(command, 'command');
+            
+            // Process command
+            const [cmd, ...args] = command.split(' ');
+            
+            switch (cmd.toLowerCase()) {
+                case 'help':
+                    showHelp();
+                    break;
+                case 'status':
+                    await getStatus();
+                    break;
+                case 'tunnel':
+                    await createTunnel(args[0]);
+                    break;
+                case 'dns':
+                    await resolveDNS(args[0]);
+                    break;
+                case 'clear':
+                    terminalOutput.innerHTML = '';
+                    break;
+                case 'kuhul':
+                    await executeKuhul(args.join(' '));
+                    break;
+                case 'ls':
+                    await listFiles(args[0]);
+                    break;
+                default:
+                    log(`Unknown command: ${cmd}. Type 'help' for commands.`, 'error');
+            }
+            
+            commandInput.value = '';
+        }
+
+        function showHelp() {
+            const help = `
+Available Commands:
+  help                    - Show this help
+  status                  - Show system status
+  tunnel [port]          - Create tunnel (default: 3000)
+  dns [hostname]         - Resolve DNS
+  clear                  - Clear terminal
+  kuhul [code]          - Execute K'uhul code
+  ls [path]             - List files
+  ping                  - Test server
+            `.trim();
+            
+            help.split('\n').forEach(line => log(line, 'output'));
+        }
+
+        // Server Functions
+        async function startServer() {
+            log('Starting XJSON server...');
+            try {
+                const response = await fetch('/api/xjson/status');
+                const data = await response.json();
+                state.serverActive = true;
+                log(`Server active: ${data.server.status}`);
+                log(`Uptime: ${Math.floor(data.server.uptime / 1000)}s`);
+            } catch (error) {
+                log(`Failed to start server: ${error.message}`, 'error');
+            }
+        }
+
+        async function createTunnel(port = '3000') {
+            log(`Creating tunnel for port ${port}...`);
+            try {
+                const response = await fetch('/api/tunnel/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        localPort: parseInt(port),
+                        subdomain: `tunnel-${Date.now().toString(36)}`
+                    })
+                });
+                
+                const data = await response.json();
+                state.activeTunnels.push(data);
+                log(`Tunnel created: ${data.publicUrl} → localhost:${port}`);
+                updateStats();
+            } catch (error) {
+                log(`Tunnel creation failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function resolveDNS(hostname) {
+            if (!hostname) {
+                log('Usage: dns [hostname]', 'error');
+                return;
+            }
+            
+            log(`Resolving ${hostname}...`);
+            try {
+                const response = await fetch('/api/dns/resolve', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ hostname })
+                });
+                
+                const data = await response.json();
+                log(`${hostname} → ${data.ip} ${data.internal ? '(internal)' : '(external)'}`);
+            } catch (error) {
+                log(`DNS resolution failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function executeKuhul(code) {
+            if (!code) {
+                log('Usage: kuhul [code]', 'error');
+                return;
+            }
+            
+            log(`Executing K'uhul: ${code}`);
+            try {
+                const response = await fetch('/api/xjson/execute', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        code: code,
+                        language: 'kuhul'
+                    })
+                });
+                
+                const data = await response.json();
+                log(`Result: ${JSON.stringify(data, null, 2)}`, 'output');
+            } catch (error) {
+                log(`Execution failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function listFiles(path = '/') {
+            log(`Listing ${path}...`);
+            try {
+                const response = await fetch('/api/fs/list', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ path })
+                });
+                
+                const data = await response.json();
+                data.files.forEach(file => {
+                    log(`${file.type === 'directory' ? '📁' : '📄'} ${file.name}`, 'output');
+                });
+            } catch (error) {
+                log(`List failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function getStatus() {
+            try {
+                const response = await fetch('/api/xjson/status');
+                const data = await response.json();
+                log(JSON.stringify(data, null, 2), 'output');
+            } catch (error) {
+                log(`Status check failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Utility Functions
+        async function updateStats() {
+            try {
+                const response = await fetch('/api/xjson/status');
+                const data = await response.json();
+                
+                document.getElementById('uptime').textContent = 
+                    `${Math.floor(data.server.uptime / 1000)}s`;
+                document.getElementById('tunnelCount').textContent = 
+                    data.resources.tunnels;
+                document.getElementById('connections').textContent = 
+                    data.server.connections;
+                document.getElementById('cacheSize').textContent = 
+                    data.resources.cache.length;
+            } catch (error) {
+                // Silently fail
+            }
+        }
+
+        function toggleTheme() {
+            state.theme = state.theme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', state.theme);
+            log(`Theme switched to ${state.theme}`);
+        }
+
+        function clearCache() {
+            if (caches) {
+                caches.keys().then(keys => {
+                    keys.forEach(key => caches.delete(key));
+                    log('Cache cleared');
+                });
+            }
+        }
+
+        function testConnection() {
+            fetch('/api/xjson/ping')
+                .then(() => log('Connection test passed'))
+                .catch(error => log(`Connection test failed: ${error.message}`, 'error'));
+        }
+
+        function installApp() {
+            if (window.deferredPrompt) {
+                window.deferredPrompt.prompt();
+                window.deferredPrompt.userChoice.then(choice => {
+                    if (choice.outcome === 'accepted') {
+                        log('PWA installed');
+                    }
+                    window.deferredPrompt = null;
+                });
+            } else {
+                log('Installation not available', 'error');
+            }
+        }
+
+        // Keyboard shortcuts
+        commandInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                executeCommand();
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (state.historyIndex > 0) {
+                    state.historyIndex--;
+                    commandInput.value = state.terminalHistory[state.historyIndex];
+                }
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (state.historyIndex < state.terminalHistory.length - 1) {
+                    state.historyIndex++;
+                    commandInput.value = state.terminalHistory[state.historyIndex];
+                } else {
+                    state.historyIndex = state.terminalHistory.length;
+                    commandInput.value = '';
+                }
+            }
+        });
+
+        // Before install prompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            window.deferredPrompt = e;
+            log('App can be installed. Click the install button.');
+        });
+
+        // Log initial message
+        log('System ready. Type "help" for commands.');
+    </script>
+</body>
+</html>

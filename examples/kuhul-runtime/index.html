@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>FRACTAL–K'UHUL Runtime Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #05050b;
+      --panel: #0b0f18;
+      --accent: #16f2aa;
+      --accent-soft: rgba(22,242,170,0.2);
+      --accent2: #00e0ff;
+      --text: #eaf7ff;
+      --muted: #8a9bb0;
+      --danger: #ff4b81;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: radial-gradient(circle at top, #050814 0, #05050b 45%, #020208 100%);
+      color: var(--text);
+      font-family: "Courier New", monospace;
+      min-height: 100vh;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 20px;
+    }
+    .shell {
+      width: 100%;
+      max-width: 1080px;
+      border-radius: 18px;
+      border: 1px solid rgba(22,242,170,0.35);
+      background: linear-gradient(145deg, #050712 0, #05050b 40%, #050916 100%);
+      box-shadow: 0 0 35px rgba(0,0,0,0.8), 0 0 55px rgba(22,242,170,0.15);
+      padding: 18px 20px 16px;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      grid-column-gap: 18px;
+      grid-row-gap: 12px;
+    }
+    .header {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .title {
+      font-size: 1.15rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+    }
+    .badge {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--accent2);
+      color: var(--accent2);
+    }
+    .panel {
+      background: radial-gradient(circle at top left, rgba(22,242,170,0.08), rgba(4,6,12,0.9));
+      border-radius: 12px;
+      border: 1px solid rgba(22,242,170,0.18);
+      padding: 12px 12px 10px;
+      font-size: 0.8rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(22,242,170,0.2), transparent 40%, transparent 60%, rgba(0,224,255,0.15));
+      mix-blend-mode: soft-light;
+      opacity: 0.35;
+      pointer-events: none;
+    }
+    .panel h2 {
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .pill {
+      border-radius: 999px;
+      padding: 2px 8px;
+      border: 1px solid rgba(22,242,170,0.4);
+      background: rgba(0,0,0,0.3);
+      font-size: 0.7rem;
+      color: var(--accent);
+    }
+    .btn {
+      margin-top: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--accent);
+      color: var(--bg);
+      background: radial-gradient(circle at top, var(--accent) 0, #0de890 35%, #029f63 100%);
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
+    }
+    .btn:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: 0 0 0;
+      filter: brightness(0.95);
+    }
+    .btn-secondary {
+      border-color: var(--accent2);
+      background: rgba(0,0,0,0.65);
+      color: var(--accent2);
+    }
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .metric {
+      border-radius: 8px;
+      border: 1px solid rgba(22,242,170,0.2);
+      padding: 6px 7px 5px;
+      background: rgba(1,5,12,0.95);
+    }
+    .metric-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+    .metric-value {
+      font-size: 0.85rem;
+      color: var(--accent);
+    }
+    .metric-value.danger {
+      color: var(--danger);
+    }
+    .log {
+      font-family: "Courier New", monospace;
+      font-size: 0.72rem;
+      background: rgba(0,0,0,0.75);
+      border-radius: 8px;
+      border: 1px solid rgba(22,242,170,0.2);
+      padding: 8px;
+      height: 210px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      scrollbar-width: thin;
+    }
+    .log span.cpu { color: #9beafc; }
+    .log span.gpu { color: #9affc6; }
+    .log span.err { color: var(--danger); }
+    .viz {
+      width: 100%;
+      height: 180px;
+      border-radius: 8px;
+      border: 1px solid rgba(22,242,170,0.22);
+      background: radial-gradient(circle at center, rgba(22,242,170,0.18), rgba(2,5,10,1));
+    }
+    .chipdot {
+      fill: var(--accent-soft);
+      stroke: rgba(0,224,255,0.7);
+      stroke-width: 0.7;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="header">
+      <div class="title">FRACTAL–K'UHUL RUNTIME • LOW-END LAPTOP</div>
+      <div class="badge" id="profile-badge">PROFILE: …</div>
+    </header>
+
+    <!-- Left: config + controls -->
+    <section class="panel">
+      <h2>CONFIG / PROFILE</h2>
+      <div id="config-summary" style="font-size:0.75rem;color:var(--muted);line-height:1.4;">
+        Loading fractal-os.json…
+      </div>
+
+      <div class="pill-row" style="margin-top:8px;">
+        <span class="pill" id="cpu-pill">CPU: —</span>
+        <span class="pill" id="gpu-pill">iGPU: —</span>
+      </div>
+
+      <button class="btn" id="btn-run-demo">
+        RUN FRACTAL DEMO PASS
+      </button>
+      <button class="btn btn-secondary" id="btn-small-test">
+        tiny sanity matmul
+      </button>
+
+      <div class="metric-grid">
+        <div class="metric">
+          <div class="metric-label">Last pass time</div>
+          <div class="metric-value" id="metric-time">—</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Ops routed (CPU / GPU)</div>
+          <div class="metric-value" id="metric-routes">—</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right-top: tiny motherboard fractal viz -->
+    <section class="panel">
+      <h2>CHIP / SHARD MAP (DEMO)</h2>
+      <svg class="viz" viewBox="0 0 220 120" id="chip-viz">
+        <!-- motherboard outline -->
+        <rect x="5" y="5" width="210" height="110" rx="8"
+              fill="#050814" stroke="rgba(22,242,170,0.4)" stroke-width="1.2"/>
+        <!-- cpu -->
+        <rect x="25" y="25" width="60" height="50" rx="4"
+              fill="#070c18" stroke="#16f2aa" stroke-width="1"/>
+        <text x="55" y="43" text-anchor="middle" font-size="7" fill="#16f2aa">CPU-MAIN</text>
+
+        <!-- igpu -->
+        <rect x="135" y="25" width="60" height="30" rx="4"
+              fill="#070c18" stroke="#00e0ff" stroke-width="1"/>
+        <text x="165" y="43" text-anchor="middle" font-size="7" fill="#00e0ff">iGPU-0</text>
+
+        <!-- fractional chiplets -->
+        <circle cx="55" cy="80" r="3" class="chipdot"/>
+        <circle cx="75" cy="90" r="3" class="chipdot"/>
+        <circle cx="95" cy="75" r="3" class="chipdot"/>
+        <circle cx="125" cy="88" r="3" class="chipdot"/>
+        <circle cx="155" cy="78" r="3" class="chipdot"/>
+        <circle cx="180" cy="92" r="3" class="chipdot"/>
+      </svg>
+      <div style="font-size:0.7rem;color:var(--muted);margin-top:6px;">
+        Each glowing dot = a tiny FRACTAL runtime shard.  
+        The engine decides per–operation whether to light up CPU or iGPU.
+      </div>
+    </section>
+
+    <!-- Full-width bottom: log -->
+    <section class="panel" style="grid-column:1 / -1;">
+      <h2>RUNTIME LOG</h2>
+      <div class="log" id="log"></div>
+    </section>
+  </div>
+
+  <script src="fractal-runtime.js"></script>
+<script>
+  let FRACTAL;
+
+  const profileBadge = document.getElementById('profile-badge');
+  const configSummary = document.getElementById('config-summary');
+  const cpuPill = document.getElementById('cpu-pill');
+  const gpuPill = document.getElementById('gpu-pill');
+  const metricTime = document.getElementById('metric-time');
+  const metricRoutes = document.getElementById('metric-routes');
+  const runDemoBtn = document.getElementById('btn-run-demo');
+  const tinyTestBtn = document.getElementById('btn-small-test');
+
+  function updateMetrics(stats) {
+    if (stats.lastPassMs !== null) {
+      metricTime.textContent = `${stats.lastPassMs.toFixed(2)} ms`;
+    }
+    metricRoutes.textContent = `${stats.routes.cpu} / ${stats.routes.gpu}`;
+  }
+
+  async function bootFractal() {
+    FRACTAL = await new FractalKuhulRuntime({
+      logEl: 'log'
+    }).init();
+
+    const { profile, gpuReady, routes, lastPassMs } = FRACTAL.getStats();
+    profileBadge.textContent = `PROFILE: ${profile}`;
+
+    const hardware = FRACTAL.profile.hardware;
+    configSummary.textContent = `${FRACTAL.profile.label}\nCPU: ${hardware.cpu.cores} cores • ${hardware.cpu.threads_per_core} threads/core\nGPU: ${hardware.igpu.backend.toUpperCase()} • ${hardware.igpu.shared_mem_mb}MB shared`;
+    cpuPill.textContent = `CPU: ${hardware.cpu.id} (${hardware.cpu.cores}c)`;
+    gpuPill.textContent = `iGPU: ${gpuReady ? 'ready' : 'offline'}`;
+
+    updateMetrics({ routes, lastPassMs });
+
+    runDemoBtn.addEventListener('click', runFractalDemo);
+    tinyTestBtn.addEventListener('click', runTinyTest);
+
+    await runTinyTest();
+  }
+
+  async function runFractalDemo() {
+    if (!FRACTAL) return;
+    await FRACTAL.runFractalDemoPass();
+    updateMetrics(FRACTAL.getStats());
+  }
+
+  async function runTinyTest() {
+    if (!FRACTAL) return;
+    await FRACTAL.tinySanityMatmul();
+    updateMetrics(FRACTAL.getStats());
+  }
+
+  window.addEventListener('load', bootFractal);
+</script>
+
+</body>
+</html>
