@@ -1,0 +1,30 @@
+{
+  "name": "asxr-gpu-runtime",
+  "version": "4.0.0",
+  "description": "GPU-Accelerated ASXR Runtime with K'UHUL SVG-3D Language",
+  "type": "module",
+  "scripts": {
+    "start": "node server/server-gpu.js",
+    "dev": "nodemon server/server-gpu.js",
+    "gpu:test": "node tests/gpu-test.js",
+    "benchmark": "node benchmarks/gpu-benchmark.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "json-server": "^0.17.4",
+    "webgl-memory": "^1.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "asxr",
+    "gpu",
+    "webgl",
+    "vector-graphics",
+    "kuhul",
+    "neural",
+    "encryption",
+    "compression"
+  ]
+}
