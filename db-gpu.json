@@ -1,0 +1,9 @@
+{
+  "status": [
+    {
+      "id": 1,
+      "service": "asxr-gpu",
+      "state": "online"
+    }
+  ]
+}
