@@ -4,22 +4,22 @@
   "codename": "Vector Dominance",
   "name": "ASXR-GPU Runtime",
   "type": "asxr-gpu-accelerated",
-  "philosophy": "GPU-first computing with K'UHUL vector language, CUDA acceleration, neural vector operations",
+  "philosophy": "GPU-first computing with K'UHUL vector language, WebGL/WebGPU acceleration, neural vector operations",
   "features": [
     "kuhul-svg-3d-language",
-    "cuda-acceleration",
-    "pytorch-neural-ops",
+    "webgl-webgpu-acceleration",
     "asc-cipher-encryption",
     "scx-vector-compression",
     "neural-vector-operations",
     "3d-control-flow",
-    "flask-rest-api",
+    "asxr-browser-vm",
+    "gpu-shader-compilation",
     "real-time-rendering",
     "vector-cryptography"
   ],
   "gpu_capabilities": {
-    "cuda": true,
-    "pytorch": true,
+    "webgl": true,
+    "webgpu": true,
     "compute_shaders": true,
     "neural_inference": true,
     "vector_processing": true
@@ -35,18 +35,18 @@
   },
   "modules": {
     "gpu_core": [
-      "/gpu/cuda_engine.py",
-      "/gpu/kuhul_gpu_ops.py",
-      "/gpu/vector_transforms.py"
+      "/gpu/webgl-engine.js",
+      "/gpu/webgpu-engine.js",
+      "/gpu/shaders.js"
     ],
     "vector_language": [
-      "/kuhul/svg_3d_runtime.py",
-      "/kuhul/asc_cipher.py",
-      "/kuhul/scx_compression.py"
+      "/kuhul/svg-3d-runtime.js",
+      "/kuhul/asc-cipher.js",
+      "/kuhul/scx-compression.js"
     ],
     "neural_ops": [
-      "/vector/neural_processor.py",
-      "/vector/tensor_ops.py"
+      "/vector/neural-processor.js",
+      "/vector/tensor-ops.js"
     ]
   }
 }

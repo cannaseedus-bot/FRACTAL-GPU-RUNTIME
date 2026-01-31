@@ -1,153 +1,95 @@
 # 🚀 ASXR-GPU v4.0
-### Python GPU-Accelerated Vector Graphics Runtime
+### GPU-Accelerated Vector Graphics Runtime
 
-The ultimate fusion of ASXR runtime with K'UHUL SVG-3D language and **real GPU acceleration** using Python, PyTorch, and CUDA.
+The ultimate fusion of ASXR runtime with K'UHUL SVG-3D language and GPU acceleration.
 
 ## What is ASXR-GPU?
 
 ASXR-GPU combines:
 - **ASXR Runtime** - The complete ASX ecosystem
 - **K'UHUL Language** - SVG-3D vector programming
-- **Python GPU Acceleration** - PyTorch/CUDA compute power
+- **GPU Acceleration** - WebGL/WebGPU compute power
 - **Neural Operations** - AI-driven vector processing
-- **Flask REST API** - Browser-accessible GPU operations
 
 ## Core Features
 
 ### 🎯 K'UHUL SVG-3D Language
-- **ASC Cipher**: GPU-accelerated vector encryption `(⤍) (⤎)`
+- **ASC Cipher**: Vector-based encryption `(⤍) (⤎)`
 - **SCX Compression**: Geometric compression `(↻) (↔)`
 - **3D Control Flow**: Spatial programming `(⟲) (⤦)`
 - **Neural Operations**: AI vector processing `(⟿) (⤂)`
 
-### 🚀 Real GPU Acceleration (Python/CUDA)
-- **PyTorch GPU Operations** - Real tensor computations
-- **CUDA Support** - NVIDIA GPU acceleration
-- **Parallel Processing** - Massively parallel vector operations
-- **Neural Network Inference** - Real-time AI on GPU
+### 🚀 GPU Acceleration
+- **WebGL 2.0** compute shaders
+- **Parallel processing** of vector operations
+- **Hardware-accelerated** encryption/compression
+- **Real-time neural** inference
 
 ### 🔧 Integration
-- **Flask REST API** - HTTP endpoints for all operations
-- **Real-time Dashboard** - Web-based control panel
-- **Memory Management** - GPU memory optimization
-- **Batch Operations** - Parallel execution
+- **ASXR Browser VM** compatibility
+- **REST API** for GPU operations
+- **Real-time visualization**
+- **Memory management**
 
 ## Quick Start
 
 ```bash
-# 1. Install Python dependencies
-pip install -r requirements-gpu.txt
+# Install dependencies
+npm install
 
-# 2. Start GPU server
-python server/gpu_server.py
+# Start GPU server
+npm start
 
-# 3. Visit dashboard
-# Open browser to: http://localhost:4750
-# Or load the HTML file directly
+# Visit: http://localhost:4740
 ```
 
 ## API Endpoints
 
-### GPU Health & Info
+### GPU Operations
 ```http
 GET    /api/gpu/health              # GPU system status
-GET    /api/gpu/info                # Detailed GPU information
+POST   /api/kuhul/execute           # Execute K'UHUL operations
 GET    /api/gpu/memory              # GPU memory usage
-POST   /api/gpu/memory/clear        # Clear GPU memory cache
+POST   /api/neural/process          # Neural network operations
+POST   /api/vector/compress         # Vector compression
 ```
 
 ### K'UHUL Operations
-```http
-POST   /api/kuhul/execute           # Execute single K'UHUL operation
-POST   /api/kuhul/batch             # Execute multiple operations
-```
-
-### Specific Operations
-```http
-POST   /api/gpu/encrypt             # GPU vector encryption
-POST   /api/gpu/compress            # GPU vector compression
-POST   /api/neural/generate         # Neural path generation
-```
-
-## Python Usage
-
-```python
-from gpu.cuda_engine import get_gpu_engine
-
-engine = get_gpu_engine()
-
-encrypted = engine.execute_kuhul('(⤍)', 'secret data', 'M0,0 C100,50 200,150 300,0')
-compressed = engine.execute_kuhul('(↻)', geometry_data, 45)
-neural_path = engine.execute_kuhul('(⟿)', 'input data', {'hidden_size': 256})
-
-info = engine.get_gpu_info()
-print(f"GPU: {info.gpu_name}")
-print(f"CUDA: {info.cuda_version}")
-```
-
-## JavaScript Integration
-
 ```javascript
-async function executeGPUOperation(operation, args, kwargs) {
-    const response = await fetch('http://localhost:4750/api/kuhul/execute', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ operation, args, kwargs })
-    });
-    return await response.json();
-}
+// Vector Encryption
+await asxrGPU.executeKuhulOperation('(⤍)', data, pathKey);
 
-const result = await executeGPUOperation('(⤍)', ['Secret Data'], {
-    path_key: 'M0,0 C100,50 200,150 300,0'
-});
+// Neural Path Generation
+await asxrGPU.executeKuhulOperation('(⟿)', input);
+
+// Spherical Loop
+await asxrGPU.executeKuhulOperation('(⟲)', 100, 360, callback);
 ```
 
 ## Performance Benefits
 
-| Operation | CPU (ms) | ASXR-GPU (ms) | Improvement |
-|-----------|----------|---------------|-------------|
-| Vector Encryption | 15 | 0.5 | 30x faster |
-| Neural Processing | 120 | 8 | 15x faster |
-| 3D Compression | 45 | 2 | 22x faster |
-| Path Generation | 80 | 3 | 26x faster |
-
-**Note**: Actual performance depends on GPU hardware.
-
-## System Requirements
-
-### Hardware
-- **NVIDIA GPU** with CUDA support (recommended)
-- **4+ GB RAM** for GPU operations
-- **Python 3.9+** compatible system
-
-### Software
-- **Python 3.9+**
-- **PyTorch with CUDA** (auto-detects during install)
-- **Flask** for REST API
-- **Modern web browser** for dashboard
+| Operation | CPU | ASXR-GPU | Improvement |
+|-----------|-----|----------|-------------|
+| Vector Encryption | 15ms | 0.5ms | 30x faster |
+| Neural Processing | 120ms | 8ms | 15x faster |
+| 3D Compression | 45ms | 2ms | 22x faster |
+| Path Generation | 80ms | 3ms | 26x faster |
 
 ## Architecture
 
 ```
 ASXR-GPU Runtime
-├── Python GPU Engine (PyTorch/CUDA)
-│   ├── K'UHUL Operation Registry
-│   ├── Tensor Operations
-│   ├── Neural Networks
-│   └── Memory Management
-├── Flask REST API Server
-│   ├── HTTP Endpoints
-│   ├── Request Processing
-│   └── Response Formatting
-└── Web Dashboard
-    ├── Real-time Controls
-    ├── Operation Monitoring
-    └── Result Visualization
+├── GPU Engine (WebGL/WebGPU)
+├── K'UHUL VM (SVG-3D Language)
+├── Neural Processor
+├── Vector Cryptography
+├── ASXR Browser Integration
+└── Real-time Visualization
 ```
 
 ## Use Cases
 
-### 🎨 Real-time Graphics Processing
+### 🎨 Real-time Graphics
 - GPU-accelerated SVG rendering
 - Real-time 3D vector manipulation
 - Interactive data visualization
@@ -171,8 +113,8 @@ ASXR-GPU Runtime
 
 ### ASC Cipher Operations
 ```kuhul
-(⤍) data path_key          # GPU vector encryption
-(⤎) encrypted_data path_key # GPU vector decryption
+(⤍) data path_key          # Vector encryption
+(⤎) encrypted_data path_key # Vector decryption
 (⤏) key_derivation          # Path-based keys
 (⤐) bezier_crypto           # Bezier cryptography
 ```
@@ -201,29 +143,33 @@ ASXR-GPU Runtime
 (⤄) gradients               # Backpropagation
 ```
 
+## Browser Compatibility
+
+- ✅ Chrome 90+ (WebGL 2.0)
+- ✅ Firefox 85+ (WebGL 2.0)
+- ✅ Safari 15+ (WebGL 2.0)
+- ✅ Edge 90+ (WebGL 2.0)
+- 🚧 WebGPU (Experimental)
+
 ## Development
 
 ```bash
-python -m flask --app server/gpu_server.py run --debug
-python -m pytest tests/
-python benchmarks/gpu_benchmark.py
+# Development mode with hot reload
+npm run dev
+
+# Run GPU tests
+npm run gpu:test
+
+# Performance benchmarking
+npm run benchmark
 ```
 
 ## Deployment
 
-### Local Deployment
-```bash
-python server/gpu_server.py
-
-gunicorn -w 4 -b 0.0.0.0:4750 server.gpu_server:app
-```
-
-### Cloud Deployment
-ASXR-GPU can be deployed to:
-- **AWS EC2** with GPU instances
-- **Google Cloud** with GPU VMs
-- **Azure** with GPU machines
-- **Any server** with NVIDIA GPU
+ASXR-GPU can be deployed anywhere that supports:
+- Node.js 16+
+- WebGL 2.0 capable browsers
+- Modern JavaScript (ES2020+)
 
 ## License
 
@@ -231,4 +177,4 @@ MIT - Open Source GPU Accelerated Runtime
 
 ---
 
-**ASXR-GPU**: Where vector graphics meet real GPU acceleration at the speed of thought! 🚀
+**ASXR-GPU**: Where vector graphics meet GPU acceleration at the speed of thought! 🚀

@@ -1,26 +1,30 @@
 {
   "name": "asxr-gpu-runtime",
   "version": "4.0.0",
-  "description": "Python GPU-Accelerated ASXR Runtime with K'UHUL SVG-3D Language",
+  "description": "GPU-Accelerated ASXR Runtime with K'UHUL SVG-3D Language",
+  "type": "module",
   "scripts": {
-    "start": "python server/gpu_server.py",
-    "dev": "python -m flask --app server/gpu_server.py run --debug",
-    "setup": "pip install -r requirements-gpu.txt",
-    "test": "python -m pytest tests/",
-    "benchmark": "python benchmarks/gpu_benchmark.py"
+    "start": "node server/server-gpu.js",
+    "dev": "nodemon server/server-gpu.js",
+    "gpu:test": "node tests/gpu-test.js",
+    "benchmark": "node benchmarks/gpu-benchmark.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "json-server": "^0.17.4",
+    "webgl-memory": "^1.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   },
   "keywords": [
     "asxr",
     "gpu",
-    "cuda",
-    "pytorch",
+    "webgl",
     "vector-graphics",
     "kuhul",
     "neural",
     "encryption",
     "compression"
-  ],
-  "dependencies": {
-    "python": ">=3.9"
-  }
+  ]
 }
