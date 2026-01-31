@@ -1,0 +1,52 @@
+{
+  "id": "asxr-gpu-runtime",
+  "version": "4.0.0",
+  "codename": "Vector Dominance",
+  "name": "ASXR-GPU Runtime",
+  "type": "asxr-gpu-accelerated",
+  "philosophy": "GPU-first computing with K'UHUL vector language, CUDA acceleration, neural vector operations",
+  "features": [
+    "kuhul-svg-3d-language",
+    "cuda-acceleration",
+    "pytorch-neural-ops",
+    "asc-cipher-encryption",
+    "scx-vector-compression",
+    "neural-vector-operations",
+    "3d-control-flow",
+    "flask-rest-api",
+    "real-time-rendering",
+    "vector-cryptography"
+  ],
+  "gpu_capabilities": {
+    "cuda": true,
+    "pytorch": true,
+    "compute_shaders": true,
+    "neural_inference": true,
+    "vector_processing": true
+  },
+  "kuhul_language": {
+    "version": "1.0.0",
+    "glyphs": {
+      "asc_cipher": ["(⤍)", "(⤎)", "(⤏)", "(⤐)"],
+      "scx_compression": ["(↻)", "(↔)", "(⤒)", "(⤓)"],
+      "3d_control": ["(⟲)", "(⤦)", "(⤧)", "(⤨)"],
+      "neural_ops": ["(⟿)", "(⤂)", "(⤃)", "(⤄)"]
+    }
+  },
+  "modules": {
+    "gpu_core": [
+      "/gpu/cuda_engine.py",
+      "/gpu/kuhul_gpu_ops.py",
+      "/gpu/vector_transforms.py"
+    ],
+    "vector_language": [
+      "/kuhul/svg_3d_runtime.py",
+      "/kuhul/asc_cipher.py",
+      "/kuhul/scx_compression.py"
+    ],
+    "neural_ops": [
+      "/vector/neural_processor.py",
+      "/vector/tensor_ops.py"
+    ]
+  }
+}
